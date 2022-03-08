@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Col, Row } from "@canonical/react-components";
 import useContainersList from "../../hooks/useContainersList";
 import useVirtualMachinesList from "../../hooks/useVirtualMachinesList";
@@ -6,6 +6,13 @@ import useVirtualMachinesList from "../../hooks/useVirtualMachinesList";
 const Instances = () => {
   const { containersList, isLoading, isError } = useContainersList();
   const { virtualMachinesList } = useVirtualMachinesList();
+
+  useEffect(() => {
+    const eventSource = new EventSource("/api/events");
+    eventSource.onmessage = (event) => {
+      console.log("message: ", event.data);
+    };
+  }, []);
 
   return (
     <>
