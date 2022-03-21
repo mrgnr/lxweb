@@ -7,10 +7,10 @@ type Props = {
 
 const StartButton = ({ name }: Props) => {
   const startInstance = async () => {
-    console.log(`!!! start instance ${name}`);
+    console.log(`!!! restart instance ${name}`);
 
     try {
-      const response = await fetch(`/api/instance/start/${name}`);
+      const response = await fetch(`/api/instance/restart/${name}`);
       const responseData = await response.json();
 
       if (responseData.errors) {
@@ -23,7 +23,7 @@ const StartButton = ({ name }: Props) => {
 
   return (
     <Button onClick={startInstance}>
-      <i className="p-icon--power-off"></i>
+      <i className="p-icon--restart"></i>
     </Button>
   );
 };

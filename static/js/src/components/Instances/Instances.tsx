@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Card, Col, Row } from "@canonical/react-components";
 import { LxdLifecycleEvent } from "../../types";
+import RestartButton from "./RestartButton";
 import StartButton from "./StartButton";
 import StopButton from "./StopButton";
 import useInstanceList from "../../hooks/useInstanceList";
@@ -49,6 +50,7 @@ const Instances = () => {
                 ) : (
                   <StartButton name={instance.name} />
                 )}
+                <RestartButton name={instance.name} />
               </Card>
             </Col>
           ))}

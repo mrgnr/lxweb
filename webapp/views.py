@@ -10,6 +10,20 @@ from pylxd import Client
 client = Client()
 
 
+def instance_restart(name):
+    try:
+        instance = client.instances.get(name)
+
+        if instance.status == "Stopped":
+            instance.start()
+        else:
+            instance.restart()
+    except pylxd.exception.NotFound:
+        return flask.jsonify({"errors": "Instance not found"}, 404)
+
+    return flask.jsonify({"status": "success"})
+
+
 def instance_start(name):
     try:
         instance = client.instances.get(name)
@@ -17,7 +31,7 @@ def instance_start(name):
     except pylxd.exception.NotFound:
         return flask.jsonify({"errors": "Instance not found"}, 404)
 
-    return flask.jsonify({"status": "sucess"})
+    return flask.jsonify({"status": "success"})
 
 
 def instance_stop(name):
@@ -27,7 +41,7 @@ def instance_stop(name):
     except pylxd.exception.NotFound:
         return flask.jsonify({"errors": "Instance not found"}, 404)
 
-    return flask.jsonify({"status": "sucess"})
+    return flask.jsonify({"status": "success"})
 
 
 def instances_list():
