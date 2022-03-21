@@ -1,18 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Card, Col, Row } from "@canonical/react-components";
-import useContainersList from "../../hooks/useContainersList";
-import useVirtualMachinesList from "../../hooks/useVirtualMachinesList";
+import { LxdEvent, LxdLifecycleEvent } from "../../types";
+import StartButton from "./StartButton";
+import StopButton from "./StopButton";
+import useContainerList from "../../hooks/useContainerList";
+import useVirtualMachineList from "../../hooks/useVirtualMachineList";
+import { handleLifecycleEvent } from "../../events";
+import { InstanceContext } from "../../context";
 
 const Instances = () => {
-  const { containersList, isLoading, isError } = useContainersList();
-  const { virtualMachinesList } = useVirtualMachinesList();
+  const { containerList } = useContainerList();
+  const { virtualMachineList } = useVirtualMachineList();
+  const { setContainerList, setVirtualMachineList } =
+    useContext(InstanceContext);
 
   useEffect(() => {
     const eventSource = new EventSource("/api/events");
-    eventSource.onmessage = (event) => {
-      console.log("message: ", event.data);
+    eventSource.onmessage = (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+      console.log("event: ", data);
+      if (data.type === "lifecycle") {
+        handleLifecycleEvent(data as LxdLifecycleEvent, {
+          containerList,
+          setContainerList,
+          virtualMachineList,
+          setVirtualMachineList,
+        });
+      }
     };
-  }, []);
+
+    return () => {
+      eventSource.close();
+    };
+  }, [
+    containerList,
+    setContainerList,
+    virtualMachineList,
+    setVirtualMachineList,
+  ]);
 
   return (
     <>
@@ -21,7 +46,7 @@ const Instances = () => {
           <Col size={12}>
             <h2>Containers</h2>
           </Col>
-          {containersList.map((container) => (
+          {containerList.map((container) => (
             <Col size={4} key={container.name}>
               <Card title={container.name}>
                 <ul className="p-list">
@@ -29,6 +54,11 @@ const Instances = () => {
                     <strong>Status:</strong> {container.status}
                   </li>
                 </ul>
+                {container.status === "Running" ? (
+                  <StopButton name={container.name} />
+                ) : (
+                  <StartButton name={container.name} />
+                )}
               </Card>
             </Col>
           ))}
@@ -40,7 +70,7 @@ const Instances = () => {
           <Col size={12}>
             <h2>Virtual Machines</h2>
           </Col>
-          {virtualMachinesList.map((virtualMachine) => (
+          {virtualMachineList.map((virtualMachine) => (
             <Col size={4} key={virtualMachine.name}>
               <Card title={virtualMachine.name}>
                 <ul className="p-list">

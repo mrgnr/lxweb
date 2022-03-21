@@ -9,6 +9,27 @@ from pylxd import Client
 
 client = Client()
 
+
+def container_start(name):
+    try:
+        container = client.containers.get(name)
+        container.start()
+    except pylxd.exception.NotFound:
+        return flask.jsonify({"errors": "Container not found"}, 404)
+
+    return flask.jsonify({"status": "sucess"})
+
+
+def container_stop(name):
+    try:
+        container = client.containers.get(name)
+        container.stop()
+    except pylxd.exception.NotFound:
+        return flask.jsonify({"errors": "Container not found"}, 404)
+
+    return flask.jsonify({"status": "sucess"})
+
+
 def containers_list():
     containers_info = client.containers.all()
     containers = []
@@ -70,15 +91,18 @@ def events():
             websocket_client=EventsClient, event_types=filter
         )
         events_client.connect()
-        threading.Thread(target=events_client.run).start()
+        thread = threading.Thread(target=events_client.run)
+        thread.start()
 
         try:
             while True:
                 message = events_client.messages.get()
                 yield f"event: message\n\ndata: {message}\n\n"
         except GeneratorExit:
-            print("killing thread")
-            events_client.terminate()
-            print("thread stopped")
+            print("!!! close connection")
+            if events_client is not None:
+                events_client.close()
+            thread.join()
+            print("!!! connection closed")
 
     return flask.Response(stream_events(), mimetype="text/event-stream")
