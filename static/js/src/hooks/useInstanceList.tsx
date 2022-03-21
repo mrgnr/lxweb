@@ -2,29 +2,29 @@ import { useContext } from "react";
 import { useQuery } from "react-query";
 import { InstanceContext } from "../context";
 
-const useContainerList = () => {
-  const { containerList, setContainerList } = useContext(InstanceContext);
+const useInstanceList = () => {
+  const { instanceList, setInstanceList } = useContext(InstanceContext);
 
   const { isLoading, isSuccess, isError, error } = useQuery(
-    "containerList",
+    "instanceList",
     async () => {
-      console.log("!!! fetch containerList");
-      const response = await fetch("/api/containers/list");
+      console.log("!!! fetch instanceList");
+      const response = await fetch("/api/instances/list");
       const responseData = await response.json();
 
       if (responseData.errors) {
         throw new Error(responseData.errors);
       }
 
-      const containerList = responseData;
-      console.log("!!! containerList: ", containerList);
-      setContainerList(containerList);
+      const instanceList = responseData;
+      console.log("!!! instanceList: ", instanceList);
+      setInstanceList(instanceList);
     },
     { enabled: true }
   );
 
   return {
-    containerList,
+    instanceList,
     isLoading,
     isSuccess,
     isError,
@@ -32,4 +32,4 @@ const useContainerList = () => {
   };
 };
 
-export default useContainerList;
+export default useInstanceList;

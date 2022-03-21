@@ -11,15 +11,9 @@ export type Instance = {
   config: string;
 };
 
-export type Container = Instance;
-
-export type VirtualMachine = Instance;
-
 export type InstanceContext = {
-  containerList: Container[];
-  setContainerList: Function;
-  virtualMachineList: VirtualMachine[];
-  setVirtualMachineList: Function;
+  instanceList: Instance[];
+  setInstanceList: Function;
 };
 
 export type LxdEvent = {

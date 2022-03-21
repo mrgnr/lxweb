@@ -10,70 +10,47 @@ from pylxd import Client
 client = Client()
 
 
-def container_start(name):
+def instance_start(name):
     try:
-        container = client.containers.get(name)
-        container.start()
+        instance = client.instances.get(name)
+        instance.start()
     except pylxd.exception.NotFound:
-        return flask.jsonify({"errors": "Container not found"}, 404)
+        return flask.jsonify({"errors": "Instance not found"}, 404)
 
     return flask.jsonify({"status": "sucess"})
 
 
-def container_stop(name):
+def instance_stop(name):
     try:
-        container = client.containers.get(name)
-        container.stop()
+        instance = client.instances.get(name)
+        instance.stop()
     except pylxd.exception.NotFound:
-        return flask.jsonify({"errors": "Container not found"}, 404)
+        return flask.jsonify({"errors": "Instance not found"}, 404)
 
     return flask.jsonify({"status": "sucess"})
 
 
-def containers_list():
-    containers_info = client.containers.all()
-    containers = []
+def instances_list():
+    instances_info = client.instances.all()
+    instances = []
 
-    for container in containers_info:
-        containers.append(
+    for instance in instances_info:
+        instances.append(
             {
-                "name": container.name,
-                "description": container.description,
-                "type": container.type,
-                "created_at": container.created_at,
-                "last_used_at": container.last_used_at,
-                "status": container.status,
-                "dirty": container.dirty,
-                "stateful": container.stateful,
-                "ephemeral": container.ephemeral,
-                "config": container.config,
+                "name": instance.name,
+                "description": instance.description,
+                "type": instance.type,
+                "created_at": instance.created_at,
+                "last_used_at": instance.last_used_at,
+                "status": instance.status,
+                "dirty": instance.dirty,
+                "stateful": instance.stateful,
+                "ephemeral": instance.ephemeral,
+                "config": instance.config,
             }
         )
 
-    return flask.jsonify(containers)
-
-
-def vms_list():
-    vms_info = client.virtual_machines.all()
-    vms = []
-
-    for vm in vms_info:
-        vms.append(
-            {
-                "name": vm.name,
-                "description": vm.description,
-                "type": vm.type,
-                "created_at": vm.created_at,
-                "last_used_at": vm.last_used_at,
-                "status": vm.status,
-                "dirty": vm.dirty,
-                "stateful": vm.stateful,
-                "ephemeral": vm.ephemeral,
-                "config": vm.config,
-            }
-        )
-
-    return flask.jsonify(vms)
+    return flask.jsonify(instances)
 
 
 def events():

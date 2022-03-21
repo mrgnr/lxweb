@@ -1,8 +1,7 @@
 import {
-  Container,
+  Instance,
   InstanceContext as InstanceContextType,
   LxdLifecycleEvent,
-  VirtualMachine,
 } from "./types";
 
 export const handleLifecycleEvent = (
@@ -25,33 +24,15 @@ export const handleLifecycleEvent = (
 const updateInstance = (
   instanceName: string,
   attributes: Record<string, any>,
-  {
-    containerList,
-    setContainerList,
-    virtualMachineList,
-    setVirtualMachineList,
-  }: InstanceContextType
+  { instanceList, setInstanceList }: InstanceContextType
 ) => {
-  const instanceList = containerList.concat(virtualMachineList);
-  const instance = instanceList.find((instance: Container | VirtualMachine) => {
+  const instance = instanceList.find((instance: Instance) => {
     return instance.name === instanceName;
   });
 
-  if (instance && instance.type === "container") {
-    setContainerList(
-      containerList.map((container: Container) =>
-        container.name === instanceName
-          ? { ...container, ...attributes }
-          : container
-      )
-    );
-  } else if (instance && instance.type === "virtual-machine") {
-    setVirtualMachineList(
-      virtualMachineList.map((virtualMachine: VirtualMachine) =>
-        virtualMachine.name === instanceName
-          ? { ...virtualMachine, ...attributes }
-          : virtualMachine
-      )
-    );
-  }
+  setInstanceList(
+    instanceList.map((instance: Instance) =>
+      instance.name === instanceName ? { ...instance, ...attributes } : instance
+    )
+  );
 };

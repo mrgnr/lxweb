@@ -7,9 +7,9 @@ type Props = {
 
 const StopButton = ({ name }: Props) => {
   const stopInstance = async () => {
-    console.log(`!!! stop container ${name}`);
+    console.log(`!!! stop instance ${name}`);
 
-    const response = await fetch(`/api/container/stop/${name}`);
+    const response = await fetch(`/api/instance/stop/${name}`);
     const responseData = await response.json();
 
     if (responseData.errors) {

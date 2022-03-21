@@ -7,10 +7,10 @@ type Props = {
 
 const StartButton = ({ name }: Props) => {
   const startInstance = async () => {
-    console.log(`!!! start container ${name}`);
+    console.log(`!!! start instance ${name}`);
 
     try {
-      const response = await fetch(`/api/container/start/${name}`);
+      const response = await fetch(`/api/instance/start/${name}`);
       const responseData = await response.json();
 
       if (responseData.errors) {

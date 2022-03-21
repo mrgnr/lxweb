@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Col, Row } from "@canonical/react-components";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Container, VirtualMachine } from "./types";
+import { Instance } from "./types";
 import { InstanceContext } from "./context";
 import Instances from "./components/Instances";
 
@@ -19,15 +19,10 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const [containerList, setContainerList] = useState<Container[]>([]);
-  const [virtualMachineList, setVirtualMachineList] = useState<
-    VirtualMachine[]
-  >([]);
+  const [instanceList, setInstanceList] = useState<Instance[]>([]);
   const instanceContext = {
-    containerList,
-    setContainerList,
-    virtualMachineList,
-    setVirtualMachineList,
+    instanceList,
+    setInstanceList,
   };
 
   return (
