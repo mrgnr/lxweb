@@ -1,8 +1,4 @@
-from gevent import monkey
-monkey.patch_all()
-
-import flask
-from canonicalwebteam.flask_base.app import FlaskBase
+from quart import render_template, Quart
 
 from webapp.views import (
     instance_restart,
@@ -12,11 +8,11 @@ from webapp.views import (
     events,
 )
 
-app = FlaskBase(
+app = Quart(
     __name__,
-    "lxweb",
     template_folder="../templates",
     static_folder="../static",
+    static_url_path="/static",
 )
 
 app.add_url_rule("/api/instance/restart/<name>", view_func=instance_restart)
@@ -27,5 +23,5 @@ app.add_url_rule("/api/events", view_func=events)
 
 
 @app.route("/")
-def index():
-    return flask.render_template("index.html")
+async def index():
+    return await render_template("index.html")

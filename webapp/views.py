@@ -3,14 +3,14 @@ import queue
 import threading
 import traceback
 
-import flask
+from quart import (jsonify, Response)
 import pylxd
 from pylxd import Client
 
 client = Client()
 
 
-def instance_restart(name):
+async def instance_restart(name):
     try:
         instance = client.instances.get(name)
 
@@ -19,32 +19,32 @@ def instance_restart(name):
         else:
             instance.restart()
     except pylxd.exception.NotFound:
-        return flask.jsonify({"errors": "Instance not found"}, 404)
+        return jsonify({"errors": "Instance not found"}, 404)
 
-    return flask.jsonify({"status": "success"})
+    return jsonify({"status": "success"})
 
 
-def instance_start(name):
+async def instance_start(name):
     try:
         instance = client.instances.get(name)
         instance.start()
     except pylxd.exception.NotFound:
-        return flask.jsonify({"errors": "Instance not found"}, 404)
+        return jsonify({"errors": "Instance not found"}, 404)
 
-    return flask.jsonify({"status": "success"})
+    return jsonify({"status": "success"})
 
 
-def instance_stop(name):
+async def instance_stop(name):
     try:
         instance = client.instances.get(name)
         instance.stop()
     except pylxd.exception.NotFound:
-        return flask.jsonify({"errors": "Instance not found"}, 404)
+        return jsonify({"errors": "Instance not found"}, 404)
 
-    return flask.jsonify({"status": "success"})
+    return jsonify({"status": "success"})
 
 
-def instances_list():
+async def instances_list():
     instances_info = client.instances.all()
     instances = []
 
@@ -64,10 +64,10 @@ def instances_list():
             }
         )
 
-    return flask.jsonify(instances)
+    return jsonify(instances)
 
 
-def events():
+async def events():
     class EventsClient(pylxd.client._WebsocketClient):
         def handshake_ok(self):
             self.messages = queue.Queue()
@@ -96,4 +96,4 @@ def events():
             thread.join()
             print("!!! connection closed")
 
-    return flask.Response(stream_events(), mimetype="text/event-stream")
+    return Response(stream_events(), mimetype="text/event-stream")

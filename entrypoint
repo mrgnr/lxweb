@@ -1,10 +1,10 @@
 #! /usr/bin/env bash
 
 set -e
-RUN_COMMAND="talisker.gunicorn.gevent webapp.app:app --bind $1 --worker-class gevent --name talisker-`hostname`"
+RUN_COMMAND="hypercorn webapp.app:app --bind $1 --worker-class asyncio"
 
-if [ "${FLASK_DEBUG}" = true ] || [ "${FLASK_DEBUG}" = 1 ]; then
-    RUN_COMMAND="${RUN_COMMAND} --reload --log-level debug --timeout 9999"
+if [ "${QUART_DEBUG}" = true ] || [ "${QUART_DEBUG}" = 1 ]; then
+    RUN_COMMAND="${RUN_COMMAND} --reload --log-level debug"
 fi
 
 ${RUN_COMMAND}

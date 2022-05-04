@@ -2,7 +2,7 @@
 
 An experimental web-based instance manager for LXD.
 
-This project is implemented using the [Flask][flask] web framework, [React][react] for frontend
+This project is implemented using the [Quart][quart] web framework, [React][react] for frontend
 components and [Vanilla Framework][vanilla] for layout and styling.
 
 ## Local development
@@ -24,7 +24,7 @@ $ dotrun
 
 Once the server has started, you cah visit http://localhost:8701/ in your browser.
 
-[flask]: https://flask.palletsprojects.com/en/2.1.x/
+[quart]: https://pgjones.gitlab.io/quart/
 [react]: https://reactjs.org/
 [vanilla]: https://vanillaframework.io/
 [dotrun]: https://github.com/canonical-web-and-design/dotrun/
